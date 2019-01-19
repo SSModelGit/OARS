@@ -1,0 +1,39 @@
+within OARS.Components.Templates;
+
+partial model Spanker
+  Modelica.Blocks.Interfaces.RealInput windVel[3] annotation(
+    Placement(visible = true, transformation(origin = {-100, 0}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-100, 0}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealInput heading annotation(
+    Placement(visible = true, transformation(origin = {-100, -34}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-100, -34}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
+  Internal.Sail mastAndSail annotation(
+    Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_a annotation(
+    Placement(visible = true, transformation(origin = {0, -100}, extent = {{-16, -16}, {16, 16}}, rotation = -90), iconTransformation(origin = {0, -100}, extent = {{-16, -16}, {16, 16}}, rotation = -90)));
+  Modelica.Mechanics.MultiBody.Joints.Revolute servoJoint(useAxisFlange = true)  annotation(
+    Placement(visible = true, transformation(origin = {0, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Modelica.Mechanics.Rotational.Sources.Position servo(useSupport = true)  annotation(
+    Placement(visible = true, transformation(origin = {-44, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.Mounting1D servoMount annotation(
+    Placement(visible = true, transformation(origin = {-60, -56}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Mechanics.MultiBody.Parts.FixedRotation sailOrientation annotation(
+    Placement(visible = true, transformation(origin = {0, -64}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_auxillary annotation(
+    Placement(visible = true, transformation(origin = {100, -60}, extent = {{-16, -16}, {16, 16}}, rotation = 180), iconTransformation(origin = {100, -60}, extent = {{-16, -16}, {16, 16}}, rotation = 180)));
+equation
+  connect(windVel, mastAndSail.windVel) annotation(
+    Line(points = {{-100, 0}, {-12, 0}, {-12, 0}, {-10, 0}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(heading, servo.phi_ref) annotation(
+    Line(points = {{-100, -34}, {-56, -34}, {-56, -34}, {-56, -34}}, color = {0, 0, 127}));
+  connect(sailOrientation.frame_b, servoJoint.frame_a) annotation(
+    Line(points = {{0, -54}, {0, -54}, {0, -44}, {0, -44}}, color = {95, 95, 95}));
+  connect(sailOrientation.frame_a, frame_a) annotation(
+    Line(points = {{0, -74}, {0, -74}, {0, -100}, {0, -100}}, color = {95, 95, 95}));
+  connect(servoMount.frame_a, frame_a) annotation(
+    Line(points = {{-60, -66}, {-60, -66}, {-60, -80}, {0, -80}, {0, -100}, {0, -100}}, color = {95, 95, 95}));
+  connect(mastAndSail.frame_a, servoJoint.frame_b) annotation(
+    Line(points = {{0, -10}, {0, -10}, {0, -24}, {0, -24}}, color = {95, 95, 95}));
+  connect(servoMount.flange_b, servo.support) annotation(
+    Line(points = {{-50, -56}, {-44, -56}, {-44, -44}, {-44, -44}}));
+  connect(servo.flange, servoJoint.axis) annotation(
+    Line(points = {{-34, -34}, {-10, -34}, {-10, -34}, {-10, -34}}));
+end Spanker;
