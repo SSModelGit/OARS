@@ -8,7 +8,7 @@ model SailTest
   Modelica.Blocks.Sources.Constant ycomp(k = 0) annotation(Placement(visible = true, transformation(origin = {-50, -35.609}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.Constant zcomp(k = 0) annotation(Placement(visible = true, transformation(origin = {-50, -76.09}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   // Sail
-  Templates.Internal.Sail sail(r = {0.1, 0, 0}, r_shape = {0, 0, 0}, density = 7700, r_COL = {0.05, 0, 0}, heightDirection = {0, 1, 0}, height = 1, width = 0.01, r_0.fixed = true, v_0.fixed = true, r_0.start = {0, 0, 0}, v_0.start = {0, 0, 0}) annotation(Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Templates.Internal.Sail sail(r = {0.1, 0, 0}, r_shape = {0, 0, 0}, density = 7700, r_COL = {0, 0, 0}, heightDirection = {0, 1, 0}, height = 1, width = 0.01, r_0.fixed = true, v_0.fixed = true, r_0.start = {0, 0, 0}, v_0.start = {0, 0, 0}) annotation(Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   // Sensor
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity sail_v(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world) annotation(Placement(visible = true, transformation(origin = {25.985, -27.609}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   // Wind velocity vector
