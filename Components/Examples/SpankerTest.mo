@@ -6,11 +6,11 @@ model SpankerTest
   // Constant input
   Modelica.Blocks.Sources.Constant xcomp(k = 1) annotation(Placement(visible = true, transformation(origin = {-50, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Sources.Constant ycomp(k = 0) annotation(Placement(visible = true, transformation(origin = {-50, -35.609}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Constant zcomp(k = 0) annotation(Placement(visible = true, transformation(origin = {-50, -76.09}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.Constant zcomp(k = 0.01) annotation(Placement(visible = true, transformation(origin = {-50, -76.09}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Blocks.Math.Gain gain1(k = Modelica.Constants.pi / 180) annotation(Placement(visible = true, transformation(origin = {-50, 37.054}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   parameter Real k_dw = 1000;
   // spanker
-  Instances.Spanker spanker(r_COL = {0, 0, 0}, heightDirection = {0, 1, 0}, height = 1, width = 0.01, r_0.fixed = true, v_0.fixed = true, r_0.start = {0, 0, 0}, v_0.start = {0, 0, 0}, color = {0, 0, 0}, m = 10, length = 0.6) annotation(Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Instances.Spanker spanker(r_COL = {0, 0, 0}, heightDirection = {0, 1, 0}, sailWidth = 0.01, r_0.fixed = true, v_0.fixed = true, r_0.start = {0, 0, 0}, v_0.start = {0, 0, 0}, color = {0, 0, 0}, m = 10, sailLength = 0.6) annotation(Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   // Sensor
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity sail_v(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world) annotation(Placement(visible = true, transformation(origin = {25.985, -27.609}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteAngularVelocity sail_w(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world) "Absolute angular velocity of the boat" annotation(Placement(visible = true, transformation(origin = {25.985, -48.376}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));

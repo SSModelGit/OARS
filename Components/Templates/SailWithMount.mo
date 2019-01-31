@@ -8,16 +8,16 @@ partial model SailWithMount
   import Modelica.SIunits.Conversions.to_unit1;
   import Modelica.SIunits.Conversions.to_deg;
   // Sail Rigid Body Parameters
-  parameter SI.Position r_COL[3] = {0, 0, 0} "Vector from frame_a of the sail rigid body to the center of lift";
-  parameter SI.Mass m = 1;
-  // Sail Force Parameters
+  parameter SI.Position r_COL[3] = {0, 0, 0} "Vector from frame_a of the sail rigid body to the center of lift" annotation(Evaluate = true, Dialog(group = "Rigid Body Parameters"));
+  parameter SI.Mass m = 1 "Mass of the sail + mount" annotation(Evaluate = true, Dialog(group = "Rigid Body Parameters"));
+  // General Parameters
   parameter Boolean animation = true "= true, if animation shall be enabled (show box between frame_a and frame_b)";
-  parameter SI.Length length = 1 "Length of box";
-  parameter Modelica.Mechanics.MultiBody.Types.Axis lengthDirection = {1, 0, 0} "Unit vector in length direction of box, resolved in frame_a" annotation(Evaluate = true);
-  parameter SI.Distance height = length / world.defaultWidthFraction "Height of box";
-  parameter Modelica.Mechanics.MultiBody.Types.Axis heightDirection = {0, 1, 0} "Unit vector in height direction of box, resolved in frame_a";
-  parameter SI.Distance width = height "Width of box";
-  parameter SI.Density rho = 1225 "Density of the fluid (e.g. air: 1225 or water: 997)";
+  // Sail Force Parameters
+  parameter Modelica.Mechanics.MultiBody.Types.Axis lengthDirection = {1, 0, 0} "Unit vector in length direction of sail, resolved in frame_a" annotation(Evaluate = true, Dialog(group = "Sail Force Parameters"));
+  parameter Modelica.Mechanics.MultiBody.Types.Axis heightDirection = {0, 1, 0} "Unit vector in height direction of mast, resolved in frame_a" annotation(Evaluate = true, Dialog(group = "Sail Force Parameters"));
+  parameter SI.Density rho = 1225 "Density of the fluid (e.g. air: 1225 or water: 997)" annotation(Evaluate = true, Dialog(group = "Sail Force Parameters"));
+  parameter SI.Area area = mastHeight * sailLength "Maximum area of sail, when directly facing wind" annotation(Evaluate = true, Dialog(group = "Sail Force Parameters"));
+  final parameter Modelica.Mechanics.MultiBody.Types.Axis sail_n = cross(lengthDirection, heightDirection) "Vector normal to sail surface (surface defined as length x height)" annotation(Evaluate = true, Dialog(group = "Sail Force Parameters"));
   // Kinematic variables
   SI.Position r_0[3](start = {0, 0, 0}, each stateSelect = if enforceStates then StateSelect.always else StateSelect.avoid) "Position vector from origin of world frame to origin of frame_a" annotation(Dialog(tab = "Initialization", showStartAttribute = true));
   SI.Velocity v_0[3](start = {0, 0, 0}, each stateSelect = if enforceStates then StateSelect.always else StateSelect.avoid) "Absolute velocity of frame_a, resolved in world frame (= der(r_0))" annotation(Dialog(tab = "Initialization", showStartAttribute = true));
@@ -34,8 +34,13 @@ partial model SailWithMount
   parameter Boolean useQuaternions = true "= true, if quaternions shall be used as potential states otherwise use 3 angles as potential states" annotation(Dialog(tab = "Advanced"));
   parameter Types.RotationSequence sequence_angleStates = {1, 2, 3} "Sequence of rotations to rotate world frame into frame_a around the 3 angles used as potential states" annotation(Evaluate = true, Dialog(tab = "Advanced", enable = not useQuaternions));
   // Animation inputs
-  input Types.Color color = Modelica.Mechanics.MultiBody.Types.Defaults.BodyColor "Color of cylinder" annotation(Dialog(colorSelector = true, enable = animation));
-  input Types.SpecularCoefficient specularCoefficient = world.defaultSpecularCoefficient "Reflection of ambient light (= 0: light is completely absorbed)" annotation(Dialog(enable = animation));
+  parameter SI.Length mastHeight = 1 "Length of box" annotation(Evaluate = true, Dialog(tab = "Animation", enable = animation));
+  parameter SI.Length mastDiameter = world.defaultBodyDiameter "Diameter of mast, as used in animation" annotation(Evaluate = true, Dialog(tab = "Animation", enable = animation));
+  parameter SI.Length sailLength = 1 "Length of box" annotation(Evaluate = true, Dialog(tab = "Animation", enable = animation));
+  final parameter SI.Distance sailHeight = mastHeight "Height of mast" annotation(Evaluate = true, Dialog(tab = "Animation", enable = animation));
+  parameter SI.Distance sailWidth = sailLength "Width of sail" annotation(Evaluate = true, Dialog(tab = "Animation", enable = animation));
+  input Types.Color color = Modelica.Mechanics.MultiBody.Types.Defaults.BodyColor "Color of cylinder" annotation(Evaluate = true, Dialog(tab = "Animation", colorSelector = true, enable = animation));
+  input Types.SpecularCoefficient specularCoefficient = world.defaultSpecularCoefficient "Reflection of ambient light (= 0: light is completely absorbed)" annotation(Evaluate = true, Dialog(tab = "Animation", enable = animation));
   // Sail and Mount Components
   Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_a annotation(Placement(visible = true, transformation(origin = {0, -100}, extent = {{-16, -16}, {16, 16}}, rotation = -90), iconTransformation(origin = {0, -100}, extent = {{-16, -16}, {16, 16}}, rotation = -90)));
   Modelica.Mechanics.MultiBody.Joints.Revolute servoJoint(useAxisFlange = true) annotation(Placement(visible = true, transformation(origin = {0, -34}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
@@ -45,7 +50,7 @@ partial model SailWithMount
   // Inputs
   Modelica.Blocks.Interfaces.RealInput windVel[3] annotation(Placement(visible = true, transformation(origin = {-100, 0}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-120, 1.673}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
   Modelica.Blocks.Interfaces.RealInput heading annotation(Placement(visible = true, transformation(origin = {-100, -34}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-120, -74}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
-  Internal.Sail sail(r_COL = r_COL, m = m, animation = animation, length = length, lengthDirection = lengthDirection, height = height, heightDirection = heightDirection, width = width, rho = rho, color = color, specularCoefficient = specularCoefficient, angles_fixed = angles_fixed, angles_start = angles_start, sequence_start = sequence_start, w_0_fixed = w_0_fixed, w_0_start = w_0_start, z_0_fixed = z_0_fixed, z_0_start = z_0_start, enforceStates = enforceStates, useQuaternions = useQuaternions) annotation(Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Internal.Sail sail(mastHeight = mastHeight, mastDiameter = mastDiameter, sailLength = sailLength, sailWidth = sailWidth, color = color, specularCoefficient = specularCoefficient, enforceStates = enforceStates, useQuaternions = useQuaternions, angles_fixed = angles_fixed, angles_start = angles_start, sequence_start = sequence_start, w_0_fixed = w_0_fixed, w_0_start = w_0_start, z_0_fixed = z_0_fixed, z_0_start = z_0_start, r_COL = r_COL, m = m, animation = animation, lengthDirection = lengthDirection, heightDirection = heightDirection, rho = rho, area = area) annotation(Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
 protected
   outer Modelica.Mechanics.MultiBody.World world;
 equation
